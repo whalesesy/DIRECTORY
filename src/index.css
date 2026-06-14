@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --kisii-blue:        #1B4F8A;
+  --kisii-blue-light:  #2A6CB5;
+  --kisii-blue-dark:   #0F3460;
+  --kisii-green:       #1F7A3A;
+  --kisii-green-light: #2E9B52;
+  --kisii-green-dark:  #145A28;
+  --kisii-gold:        #D4A017;
+  --kisii-gold-light:  #E8C04A;
+  --kisii-white:       #FFFFFF;
+  --kisii-surface:     #F7FAFC;
+  --kisii-border:      #E2E8F0;
+  --kisii-text:        #1A2E44;
+  --kisii-text-muted:  #5A6F85;
+}
+
+@layer base {
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--kisii-surface);
+    color: var(--kisii-text);
+    -webkit-font-smoothing: antialiased;
+    width: 100%;
+    overflow-x: hidden;
+    font-size: clamp(0.875rem, 1vw + 0.5rem, 1.125rem);
+  }
+}
+
+@layer components {
+  .card-base {
+    @apply bg-kisii-white rounded-2xl border border-kisii-border shadow-sm;
+  }
+  .btn-primary {
+    @apply bg-kisii-blue hover:bg-kisii-blue-dark text-white font-semibold px-5 py-2.5 rounded-xl transition-all duration-200;
+  }
+  .btn-secondary {
+    @apply border border-kisii-green text-kisii-green hover:bg-kisii-green/5 font-semibold px-5 py-2.5 rounded-xl transition-all duration-200;
+  }
+  .tricolor-bar {
+    @apply flex h-1.5;
+  }
+  .tricolor-bar > :nth-child(1) { @apply flex-1 bg-kisii-blue; }
+  .tricolor-bar > :nth-child(2) { @apply flex-1 bg-kisii-white border-x border-kisii-border; }
+  .tricolor-bar > :nth-child(3) { @apply flex-1 bg-kisii-green; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--kisii-surface); }
+::-webkit-scrollbar-thumb { background: var(--kisii-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--kisii-blue-light); }
+
+/* Tel link style */
+a[href^="tel"] { text-decoration: none; }
