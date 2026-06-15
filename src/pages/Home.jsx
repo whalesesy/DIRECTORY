@@ -117,51 +117,55 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-kisii-surface">
       {/* ── Hero ── */}
-      <header className="relative overflow-hidden text-white">
-        {/* Flag tricolor */}
-        <div className="absolute inset-0 flex flex-col pointer-events-none">
+      <header className="relative overflow-hidden text-white bg-gradient-to-br from-kisii-blue-dark via-kisii-blue to-kisii-green-dark py-12 sm:py-16">
+        {/* Tricolor flag banner at the top of the header */}
+        <div className="absolute top-0 left-0 right-0 flex h-1.5 pointer-events-none">
           <div className="flex-[2] bg-kisii-blue" />
           <div className="flex-[1] bg-kisii-white" />
           <div className="flex-[2] bg-kisii-green" />
         </div>
 
         {/* Subtle overlay pattern */}
-        <div className="absolute inset-0 opacity-5"
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
           style={{
             backgroundImage: 'repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)',
             backgroundSize: '20px 20px',
           }}
         />
+        {/* Decorative ambient radial gradient */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(212,160,23,0.15),transparent_40%)] pointer-events-none" />
 
-        <div className="relative z-10 w-full px-4 sm:px-8 lg:px-16 py-14 text-center">
+        <div className="relative z-10 w-full px-4 sm:px-8 lg:px-16 text-center">
           {/* Kenya badge */}
           <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-16 h-1 bg-kisii-gold rounded-full" />
+            <div className="w-12 h-0.5 bg-kisii-gold rounded-full" />
             <p className="text-kisii-gold text-xs sm:text-sm font-bold tracking-widest uppercase select-none">
               Republic of Kenya
             </p>
-            <div className="w-16 h-1 bg-kisii-gold rounded-full" />
+            <div className="w-12 h-0.5 bg-kisii-gold rounded-full" />
           </div>
 
           {/* County seal / logo */}
           <div className="inline-flex items-center justify-center mb-5">
             <img 
-              src="/kisii-logo.png" 
+              src={`${import.meta.env.BASE_URL}kisii-logo.png`} 
               alt="Kisii County Government Logo"
               className="h-20 w-20 sm:h-24 sm:w-24 object-contain drop-shadow-lg animate-fade-in"
             />
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white drop-shadow-lg tracking-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white drop-shadow-sm tracking-tight">
             Kisii County
           </h1>
-          <p className="text-xl sm:text-2xl md:text-3xl text-kisii-gold font-semibold mt-2 mb-2">Government Directory</p>
-          <p className="text-white/70 text-sm sm:text-base mb-8 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl md:text-2xl text-kisii-gold-light font-bold mt-1.5 mb-1.5 tracking-wide uppercase">
+            Government Directory
+          </p>
+          <p className="text-white/90 text-sm sm:text-base mb-8 max-w-2xl mx-auto font-medium">
             Find any office, officer, or extension in the county government
           </p>
 
           {/* Search */}
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-2xl mx-auto">
             <SearchBar value={search} onChange={setSearch} />
           </div>
 
@@ -171,11 +175,11 @@ export default function Home() {
               <a
                 key={line.number}
                 href={`tel:${line.number}`}
-                className="inline-flex items-center gap-2 border border-kisii-gold/60
-                  bg-kisii-blue-dark/40 hover:bg-kisii-blue-dark/70 backdrop-blur
-                  px-4 py-2 rounded-full text-sm sm:text-base transition-all duration-200 font-medium"
+                className="inline-flex items-center gap-2 border border-kisii-gold/40
+                  bg-kisii-blue-dark/50 hover:bg-kisii-blue-dark/80 backdrop-blur-md
+                  px-4 py-2 rounded-full text-xs sm:text-sm transition-all duration-200 font-semibold text-white/95"
               >
-                <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-kisii-gold" />
+                <Phone className="w-3.5 h-3.5 text-kisii-gold" />
                 {line.label}: <span className="text-kisii-gold-light">{line.number}</span>
               </a>
             ))}
@@ -212,7 +216,7 @@ export default function Home() {
       {!search.trim() && (
         <main className="w-full px-4 sm:px-8 lg:px-16 py-8">
           {/* Stats bar */}
-          <div className="grid grid-cols-3 gap-4 sm:gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
             {[
               { label: 'Departments', value: DEPARTMENTS.length, color: 'text-kisii-blue' },
               { label: 'Total Contacts', value: SEARCH_INDEX.length, color: 'text-kisii-green' },
@@ -231,7 +235,7 @@ export default function Home() {
             <h2 className="text-2xl sm:text-3xl font-bold text-kisii-text">Departments</h2>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 min-[480px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {DEPARTMENTS.map(dept => (
               <DeptCard key={dept.id} dept={dept} />
             ))}

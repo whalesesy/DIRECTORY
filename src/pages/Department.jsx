@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Phone, Mail, Users, ArrowUpRight } from 'lucide-react';
+import { ChevronLeft, Phone, Mail, Users, ArrowUpRight, User } from 'lucide-react';
 import { DEPARTMENTS } from '../data/departments';
 import DeptIcon from '../components/DeptIcon';
 import SearchBar from '../components/SearchBar';
 import Highlight from '../components/Highlight';
 
 function initials(name) {
+  if (!name) return '';
   return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 }
 
@@ -17,12 +18,13 @@ function StaffCard({ contact, query, index }) {
     'bg-kisii-gold/10 text-kisii-gold-dark group-hover:bg-kisii-blue/10 group-hover:text-kisii-blue',
   ];
   const colorClass = colors[index % colors.length];
+  const init = initials(contact.name);
 
   return (
     <article className="bg-kisii-white rounded-xl border border-kisii-border p-4 sm:p-5
       hover:border-kisii-green hover:shadow-md transition-all duration-200 group animate-fade-in">
       <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-sm sm:text-base font-bold mb-3 transition-all ${colorClass}`}>
-        {initials(contact.name)}
+        {init ? init : <User className="w-5 h-5 sm:w-6 sm:h-6" />}
       </div>
 
       {/* Role — prominent, first */}
@@ -31,9 +33,11 @@ function StaffCard({ contact, query, index }) {
       </p>
 
       {/* Name — secondary */}
-      <h3 className="font-medium text-kisii-text text-xs sm:text-sm mt-1 leading-snug">
-        <Highlight text={contact.name} query={query} />
-      </h3>
+      {contact.name && (
+        <h3 className="font-medium text-kisii-text text-xs sm:text-sm mt-1 leading-snug">
+          <Highlight text={contact.name} query={query} />
+        </h3>
+      )}
 
       {/* Extension */}
       {contact.ext && (
@@ -95,23 +99,25 @@ export default function Department() {
     <div className="min-h-screen bg-kisii-surface">
       {/* ── Top Nav ── */}
       <nav className="sticky top-0 z-20 bg-kisii-white/95 backdrop-blur border-b border-kisii-border">
-        <div className="w-full px-4 sm:px-8 lg:px-16 py-3 flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="p-2 rounded-full hover:bg-kisii-surface text-kisii-blue transition-colors"
-            aria-label="Go back"
-          >
-            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-          </button>
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <span className="text-xs sm:text-sm text-kisii-text-muted hidden sm:block">
-              <Link to="/" className="hover:text-kisii-blue transition-colors">Home</Link>
-              {' / '}
-            </span>
-            <span className="font-bold text-kisii-text text-sm sm:text-base truncate">{dept.name}</span>
+        <div className="w-full px-4 sm:px-8 lg:px-16 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-full hover:bg-kisii-surface text-kisii-blue transition-colors shrink-0"
+              aria-label="Go back"
+            >
+              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-xs sm:text-sm text-kisii-text-muted hidden sm:block">
+                <Link to="/" className="hover:text-kisii-blue transition-colors">Home</Link>
+                {' / '}
+              </span>
+              <span className="font-bold text-kisii-text text-sm sm:text-base truncate">{dept.name}</span>
+            </div>
           </div>
           {/* Compact search */}
-          <div className="w-48 sm:w-72">
+          <div className="w-full sm:w-72">
             <SearchBar
               value={search}
               onChange={setSearch}
@@ -125,12 +131,8 @@ export default function Department() {
       <div className="w-full px-4 sm:px-8 lg:px-16 py-6 space-y-6 animate-slide-up">
         {/* ── Senior Officer Hero Card ── */}
         <section className="bg-kisii-white rounded-2xl border border-kisii-border shadow-sm overflow-hidden">
-          {/* Tricolor stripe */}
-          <div className="flex h-1.5">
-            <div className="flex-1 bg-kisii-blue" />
-            <div className="flex-1 bg-kisii-white border-x border-kisii-border" />
-            <div className="flex-1 bg-kisii-green" />
-          </div>
+          {/* Smooth Tricolor Gradient Stripe */}
+          <div className="h-1.5 bg-gradient-to-r from-kisii-blue via-kisii-gold to-kisii-green" />
 
           <div className="p-6 md:p-8">
             {/* Dept label */}
@@ -223,7 +225,7 @@ export default function Department() {
           </div>
 
           {filteredStaff.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 min-[480px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
               {seniorMatch && !search.trim() ? null : null}
               {filteredStaff.map((staff, i) => (
                 <StaffCard key={i} contact={staff} query={search} index={i} />
