@@ -10,21 +10,35 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        $departments = Department::where('is_active', true)
-            ->with(['senior', 'staff'])
-            ->orderBy('sort_order')
-            ->get();
+        $data = cache()->remember('api.departments', 3600, function () {
+            $departments = Department::where('is_active', true)
+                ->with(['senior', 'staff'])
+                ->orderBy('sort_order')
+                ->get();
+            return DepartmentResource::collection($departments)->response()->getData(true)['data'];
+        });
 
-        return DepartmentResource::collection($departments);
+        return response()->json(['data' => $data]);
     }
 
     public function show(string $slug)
     {
-        $department = Department::where('slug', $slug)
-            ->where('is_active', true)
-            ->with(['senior', 'staff'])
-            ->firstOrFail();
+        $departmentsData = cache()->remember('api.departments', 3600, function () {
+            $departments = Department::where('is_active', true)
+                ->with(['senior', 'staff'])
+                ->orderBy('sort_order')
+                ->get();
+            return DepartmentResource::collection($departments)->response()->getData(true)['data'];
+        });
 
-        return new DepartmentResource($department);
+        $department = collect($departmentsData)->first(function ($item) use ($slug) {
+            return ($item['id'] ?? '') === $slug;
+        });
+
+        if (!$department) {
+            abort(404);
+        }
+
+        return response()->json(['data' => $department]);
     }
 }

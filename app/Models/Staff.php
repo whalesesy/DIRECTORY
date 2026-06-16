@@ -33,4 +33,14 @@ class Staff extends Model
     {
         return $this->belongsTo(Department::class);
     }
+
+    protected static function booted()
+    {
+        static::saved(function () {
+            cache()->forget('api.departments');
+        });
+        static::deleted(function () {
+            cache()->forget('api.departments');
+        });
+    }
 }

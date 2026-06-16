@@ -124,4 +124,45 @@ class ApiControllerTest extends TestCase
         $response->assertHeader('X-RateLimit-Limit');
         $response->assertHeader('X-RateLimit-Remaining');
     }
+
+    /**
+     * Test that the health check endpoint returns UP status.
+     */
+    public function test_health_check_endpoint_returns_up(): void
+    {
+        $response = $this->getJson('/api/health');
+        
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+            'status' => 'UP',
+        ]);
+        $response->assertJsonStructure([
+            'status',
+            'timestamp',
+            'environment',
+            'checks' => [
+                'database',
+                'storage',
+                'cache',
+            ],
+        ]);
+    }
+
+    /**
+     * Test that API results are cached and invalidated when a model is modified.
+     */
+    public function test_api_results_are_cached_and_invalidated(): void
+    {
+        $dept = Department::factory()->create([
+            'name' => 'Cache Test Department',
+            'slug' => 'cache-test',
+            'is_active' => true,
+        ]);
+
+        $this->getJson('/api/departments')->assertStatus(200);
+        $this->assertTrue(cache()->has('api.departments'));
+
+        $dept->update(['name' => 'Cache Test Department Updated']);
+        $this->assertFalse(cache()->has('api.departments'));
+    }
 }

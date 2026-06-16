@@ -19,4 +19,14 @@ class CountyLine extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    protected static function booted()
+    {
+        static::saved(function () {
+            cache()->forget('api.county_lines');
+        });
+        static::deleted(function () {
+            cache()->forget('api.county_lines');
+        });
+    }
 }

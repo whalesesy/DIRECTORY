@@ -267,14 +267,21 @@ class AdminControllerTest extends TestCase
     }
 
     /**
-     * Test real-time dashboard updates endpoint returns a streamed response.
+     * Test dashboard updates route returns a JSON response containing stats.
      */
-    public function test_dashboard_updates_route_returns_streamed_response(): void
+    public function test_dashboard_updates_route_returns_json_response(): void
     {
         $response = $this->actingAs($this->admin)->get(route('admin.dashboard.updates'));
         
         $response->assertStatus(200);
-        $response->assertHeader('Content-Type', 'text/event-stream; charset=utf-8');
-        $response->assertHeader('Cache-Control', 'no-cache, private');
+        $response->assertHeader('Content-Type', 'application/json');
+        $response->assertJsonStructure([
+            'stats' => [
+                'departments_count',
+                'staff_count',
+                'county_lines_count',
+            ],
+            'recentStaff',
+        ]);
     }
 }

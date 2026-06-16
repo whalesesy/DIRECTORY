@@ -85,17 +85,20 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const eventSource = new EventSource("{{ route('admin.dashboard.updates') }}");
-        
-        eventSource.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            
-            updateCount('departments-count', data.stats.departments_count);
-            updateCount('staff-count', data.stats.staff_count);
-            updateCount('county-lines-count', data.stats.county_lines_count);
+        function fetchUpdates() {
+            fetch("{{ route('admin.dashboard.updates') }}")
+                .then(response => response.json())
+                .then(data => {
+                    updateCount('departments-count', data.stats.departments_count);
+                    updateCount('staff-count', data.stats.staff_count);
+                    updateCount('county-lines-count', data.stats.county_lines_count);
+                    updateRecentStaff(data.recentStaff);
+                })
+                .catch(err => console.error("Error fetching dashboard updates:", err));
+        }
 
-            updateRecentStaff(data.recentStaff);
-        };
+        // Poll every 5 seconds
+        setInterval(fetchUpdates, 5000);
 
         function updateCount(id, newValue) {
             const el = document.getElementById(id);

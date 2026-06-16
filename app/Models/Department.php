@@ -39,4 +39,14 @@ class Department extends Model
     {
         return $this->hasOne(Staff::class)->where('is_senior', true)->where('is_active', true);
     }
+
+    protected static function booted()
+    {
+        static::saved(function () {
+            cache()->forget('api.departments');
+        });
+        static::deleted(function () {
+            cache()->forget('api.departments');
+        });
+    }
 }

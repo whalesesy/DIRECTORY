@@ -10,10 +10,13 @@ class CountyLineController extends Controller
 {
     public function index()
     {
-        $lines = CountyLine::where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
+        $data = cache()->remember('api.county_lines', 3600, function () {
+            $lines = CountyLine::where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+            return CountyLineResource::collection($lines)->response()->getData(true)['data'];
+        });
 
-        return CountyLineResource::collection($lines);
+        return response()->json(['data' => $data]);
     }
 }
